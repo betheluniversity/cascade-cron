@@ -1,4 +1,5 @@
 __author__ = 'ejc84332'
+import time
 
 #python
 import logging
@@ -17,3 +18,5 @@ def foo():
 
 if __name__ == '__main__':
     crython.tab.start()
+    while True:
+        time.sleep(1)
