@@ -1,0 +1,9 @@
+CASCADE_LOGIN = {'username': "", 'password': ""}
+
+BASE_URL = ""
+SOAP_URL = ""
+WSDL_URL = ''
+
+SITEMAP_FILE = ""
+
+SITEMAP_BASE_FOLDER_ID = ""
