@@ -21,7 +21,8 @@ def foo():
 @crython.job(expr='@minutely')
 def sitemap():
     import sitemap
-    print "import done"
+    with open('/var/www/staging/public/_testing/jmo/cron.txt', 'a') as f:
+        f.write("%s -- import okay\n" % time.strftime("%Y-%m-%d %H:%M:%S"))
 
 if __name__ == '__main__':
     crython.tab.start()
