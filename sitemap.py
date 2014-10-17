@@ -6,6 +6,8 @@ import logging
 import crython
 
 
+logging.basicConfig(filename='/opt/cascade-cron/cascade-cron/logs/stdout.log', filemod='w', level=logging.INFO)
+
 @crython.job(second=range(0,60,10))
 def foo():
     logging.info("Print info every 10 seconds to test supervisord")
