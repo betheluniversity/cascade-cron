@@ -10,7 +10,7 @@ import crython
 ##sitemap is in Tinker until the Cascade tols are more modular. Add it to the sys path so we can import
 sys.path.append('/opt/tinker')
 
-import sitemap
+
 
 @crython.job(second=range(0,60,10))
 def foo():
@@ -18,8 +18,10 @@ def foo():
         f.write("%s -- Print info every 10 seconds to test supervisord\n" % time.strftime("%Y-%m-%d %H:%M:%S"))
 
 
-def sitemap()
-
+@crython.job(expr='@minutely')
+def sitemap():
+    import sitemap
+    print "import done"
 
 if __name__ == '__main__':
     crython.tab.start()
