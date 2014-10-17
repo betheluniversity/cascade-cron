@@ -3,7 +3,6 @@ __author__ = 'ejc84332'
 #python
 import logging
 import time
-import datetime
 
 #ext
 import crython
@@ -12,7 +11,7 @@ import crython
 @crython.job(second=range(0,60,10))
 def foo():
     with open('/var/www/staging/public/_testing/jmo/cron.txt', 'a') as f:
-        f.write("%s -- Print info every 10 seconds to test supervisord" % datetime.now())
+        f.write("%s -- Print info every 10 seconds to test supervisord" % time.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 if __name__ == '__main__':
