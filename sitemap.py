@@ -21,6 +21,7 @@ def foo():
 @crython.job(expr='@minutely')
 def sitemap():
     import sitemap
+    sitemap.test()
     with open('/var/www/staging/public/_testing/jmo/cron.txt', 'a') as f:
         f.write("%s -- import okay\n" % time.strftime("%Y-%m-%d %H:%M:%S"))
 
