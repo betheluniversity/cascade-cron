@@ -17,7 +17,7 @@ import config
 #         print 'test'
 
 
-#@crython.job(expr='@daily')
+@crython.job(expr='@daily')
 def sitemap_cron():
     sitemap.sitemap()
     logging.info("sitemap done")
