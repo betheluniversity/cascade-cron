@@ -61,7 +61,7 @@ def inspect_page(page_id):
     path = page.asset.page.path
 
     ##Is this page currently published to production?
-    if not os.path.exists('/var/www/cms.pub/%s.php' % path):
+    if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
         return
 
     #check for index page
@@ -72,7 +72,7 @@ def inspect_page(page_id):
     ret.append("<loc>https://www.bethel.edu/%s</loc>" % path)
     date = page.asset.page.lastModifiedDate
 
-    ret.append("<lastmod>%s-%s-%s</lastmod>" % (date.year, date.month, date.day))
+    ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date.year, date.month, date.day))
     ret.append("</url>")
     yield "\n".join(ret)
 
