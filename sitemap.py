@@ -1,15 +1,17 @@
-#!/opt/tinker/env/bin/python
-#python
+# !/opt/tinker/env/bin/python
+# python
 import os.path
 import logging
+import re
+from datetime import date
 
-#local
+# local
 from web_services import *
 import config
 
-##todo Add logic for index pages
+# todo Add logic for index pages
 
-###Just putting this here to work on it. Move out of tinker once the Cascade stuff is more portable
+# Just putting this here to work on it. Move out of tinker once the Cascade stuff is more portable
 def inspect_folder(folder_id):
     folder = read(folder_id, type="folder")
     if not folder:
@@ -42,7 +44,6 @@ def get_md_dict(md):
             data[field.name] = field.fieldValues.fieldValue[0].value
         except:
             data[field.name] = None
-
     return data
 
 
@@ -60,17 +61,35 @@ def inspect_page(page_id):
         return
     path = page.asset.page.path
 
-    ##Is this page currently published to production?
+    # Is this page currently published to production?
     if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
         return
 
-    #check for index page
+    # check for index page
     if path.endswith('index'):
         path = path.replace('index', '')
+
+    # todo check for location, events in the past have lower priority.
 
     ret = ["<url>"]
     ret.append("<loc>https://www.bethel.edu/%s</loc>" % path)
     date = page.asset.page.lastModifiedDate
+
+    pattern = "events/(\d{4})"
+    art_pattern = "events/arts/music/(\d{4})"
+    match_year = re.search(pattern, path)
+    match_art_year = re.search(art_pattern, path)
+
+    year = date.today().year
+
+    priority = None
+    if match_year and int(match_year.group(1)) < year:
+        priority = "0.2"
+    if match_art_year and int(match_art_year.group(1)) < year:
+        priority = "0.2"
+
+    if priority:
+        ret.append("<priority>%s</priority>" % priority)
 
     ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date.year, date.month, date.day))
     ret.append("</url>")
