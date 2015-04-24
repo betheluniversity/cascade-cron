@@ -18,8 +18,7 @@ import config
 #         print 'test'
 
 
-# @crython.job(expr='@daily')
-@crython.job(expr='@hourly')
+@crython.job(expr='@daily')
 def sitemap_cron():
     sitemap.sitemap()
     logging.info("sitemap done")
@@ -49,7 +48,7 @@ def sitemap_cron():
 
 
 # Fire once a minute.
-@crython.job(second=0)
+@crython.job(expr='@daily')
 def get_adult_programs():
     r = requests.get("http://programs.bethel.edu/adultprograms")
     print "got %s" % r.text
