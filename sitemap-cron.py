@@ -52,6 +52,12 @@ def sitemap_cron():
 def get_adult_programs():
     r = requests.get("http://programs.bethel.edu/adultprograms")
     print "got %s" % r.text
+    
+# Fire once a minute.
+@crython.job(expr='@daily')
+def get_school_and_depts():
+    r = requests.get("http://tinker.bethel.edu/sync")
+    print "got %s" % r.text
 
 if __name__ == '__main__':
     crython.tab.start()
