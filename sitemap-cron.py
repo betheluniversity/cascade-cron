@@ -56,7 +56,7 @@ def get_adult_programs():
 # Fire once a minute.
 @crython.job(expr='@daily')
 def get_school_and_depts():
-    r = requests.get("http://tinker.bethel.edu/sync")
+    r = requests.get("http://tinker.bethel.edu/sync/all")
     print "got %s" % r.text
 
 if __name__ == '__main__':
