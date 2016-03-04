@@ -1,21 +1,25 @@
-__author__ = 'ejc84332'
-
-#python
+# python
 import time
 import logging
 import requests
 
-#ext
+# ext
 import crython
-#local
+
+# local
 import sitemap
 import config
+from raven import Client
+
 
 # @crython.job(second=range(0,60,10))
 # def foo():
 #     with open('/var/www/staging/public/_testing/jmo/cron.txt', 'a') as f:
 #         f.write("%s -- Print info every 10 seconds to test supervisord\n" % time.strftime("%Y-%m-%d %H:%M:%S"))
 #         print 'test'
+
+
+client = Client(config.SENTRY_URL)
 
 
 @crython.job(expr='@daily')
@@ -47,7 +51,6 @@ def sitemap_cron():
         file.write("\n".join(lines))
 
 
-# Fire once a minute.
 @crython.job(expr='@daily')
 def get_adult_programs():
     r = requests.get("http://programs.bethel.edu/adultprograms")

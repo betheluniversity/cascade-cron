@@ -11,11 +11,12 @@ import config
 
 # todo Add logic for index pages
 
+
 # Just putting this here to work on it. Move out of tinker once the Cascade stuff is more portable
 def inspect_folder(folder_id):
     folder = read(folder_id, type="folder")
     if not folder:
-        #typically a permision denied error from the Web Services read call.
+        # typically a permision denied error from the Web Services read call.
         return
     md = folder.asset.folder.metadata.dynamicFields
     md = get_md_dict(md)
