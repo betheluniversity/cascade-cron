@@ -22,7 +22,7 @@ from raven import Client
 client = Client(config.SENTRY_URL)
 
 
-@crython.job(expr='@daily')
+@crython.job(expr='@hourly')
 def sitemap_cron():
     sitemap.sitemap()
     logging.info("sitemap done")
