@@ -53,12 +53,13 @@ def sitemap_cron():
 
 @crython.job(expr='@daily')
 def get_adult_programs():
-    r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30")
+    r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30/send")
     print "got %s" % r.text
 
 if __name__ == '__main__':
-    crython.tab.start()
-    while True:
-        # If you put Python to sleep crthon will still run.
-        # Wake up every minute anyway?
-        time.sleep(60)
+    sitemap_cron()
+    # crython.tab.start()
+    # while True:
+    #     # If you put Python to sleep crthon will still run.
+    #     # Wake up every minute anyway?
+    #     time.sleep(60)
