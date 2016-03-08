@@ -53,7 +53,7 @@ def sitemap_cron():
 
 @crython.job(expr='@daily')
 def get_adult_programs():
-    r = requests.get("http://programs.bethel.edu/adultprograms")
+    r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30")
     print "got %s" % r.text
 
 if __name__ == '__main__':
