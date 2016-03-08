@@ -9,6 +9,11 @@ from datetime import date
 from web_services import *
 import config
 
+from raven import Client
+
+client = Client(config.SENTRY_URL)
+
+
 # todo Add logic for index pages
 
 
@@ -56,8 +61,12 @@ def inspect_page(page_id):
         except:
             i += 1
 
-    md = page.asset.page.metadata.dynamicFields
-    md = get_md_dict(md)
+    try:
+        md = page.asset.page.metadata.dynamicFields
+        md = get_md_dict(md)
+    except AttributeError:
+        client.captureException()
+
     if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
         return
     path = page.asset.page.path
