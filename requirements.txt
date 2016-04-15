@@ -2,3 +2,5 @@ crython
 suds
 requests
 raven
+PyGithub
+jinja2

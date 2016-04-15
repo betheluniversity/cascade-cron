@@ -10,7 +10,7 @@ import crython
 import sitemap
 import config
 from raven import Client
-
+from github_connection import GH, template
 
 # @crython.job(second=range(0,60,10))
 # def foo():
@@ -55,17 +55,31 @@ def sitemap_cron():
 def get_adult_programs():
     r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30/send")
     print "got %s" % r.text
-    
+
+
 # Fire once a minute.
 @crython.job(expr='@daily')
 def get_school_and_depts():
     r = requests.get("http://tinker.bethel.edu/sync/all")
     print "got %s" % r.text
 
+
+# @crython.job(expr='@hourly')
+@crython.job(second=0)
+def load_humans_txt():
+
+    gh = GH(config.GH_LOGIN)
+    txt = gh.get_humans_text()
+
+    with open(config.HUMANS_STAGING_FILE, "w") as text_file:
+        text_file.write(txt)
+
+    with open(config.HUMANS_PRODUCTION_FILE, "w") as text_file:
+        text_file.write(txt)
+
 if __name__ == '__main__':
-    sitemap_cron()
-    # crython.tab.start()
-    # while True:
-    #     # If you put Python to sleep crthon will still run.
-    #     # Wake up every minute anyway?
-    #     time.sleep(60)
+    crython.tab.start()
+    while True:
+        # If you put Python to sleep crthon will still run.
+        # Wake up every minute anyway?
+        time.sleep(60)
