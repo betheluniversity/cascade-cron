@@ -64,8 +64,7 @@ def get_school_and_depts():
     print "got %s" % r.text
 
 
-# @crython.job(expr='@hourly')
-@crython.job(second=0)
+@crython.job(expr='@daily')
 def load_humans_txt():
 
     gh = GH(config.GH_LOGIN)
