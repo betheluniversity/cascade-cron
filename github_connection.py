@@ -20,14 +20,16 @@ class GH:
         self.g = Github(self.username, self.password)
         self.organization = self.g.get_organization("betheluniversity")
 
-    def get_members(self):
+    def get_members(self, bots=True):
         list_of_members = list(self.organization.get_members())
         member_list = []
         for member in list_of_members:
+            if member.name == 'bu-minion' and not bots:
+                continue
             member_list.append({'login': member.login, 'name': member.name})
         return member_list
 
     def get_humans_text(self):
-        members = self.get_members()
+        members = self.get_members(bots=False)
         t = Template(template)
         return t.render(members=members)
