@@ -24,7 +24,7 @@ class GH:
         list_of_members = list(self.organization.get_members())
         member_list = []
         for member in list_of_members:
-            if member.name == 'bu-minion' and not bots:
+            if member.login == 'bu-minion' and not bots:
                 continue
             member_list.append({'login': member.login, 'name': member.name})
         return member_list
