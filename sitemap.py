@@ -85,18 +85,9 @@ def inspect_page(page_id):
     ret.append("<loc>https://www.bethel.edu/%s</loc>" % path)
     date = page.asset.page.lastModifiedDate
 
-    pattern = "events/(\d{4})"
-    art_pattern = "events/arts/music/(\d{4})"
-    match_year = re.search(pattern, path)
-    match_art_year = re.search(art_pattern, path)
-
-    year = date.today().year
-
     priority = None
-    if match_year and int(match_year.group(1)) < year:
-        priority = "0.2"
-    if match_art_year and int(match_art_year.group(1)) < year:
-        priority = "0.2"
+    if "events" in path:
+        priority = get_event_page_priority(path)
 
     if priority:
         ret.append("<priority>%s</priority>" % priority)
@@ -104,6 +95,14 @@ def inspect_page(page_id):
     ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date.year, date.month, date.day))
     ret.append("</url>")
     yield "\n".join(ret)
+
+
+def get_event_page_priority(path):
+    year = re.search("/events/.*(\d{4})", path).group(1)
+    current_year = date.today().year
+    if int(year) < current_year:
+        return '0.2'
+    return '0.7'
 
 
 def sitemap():
