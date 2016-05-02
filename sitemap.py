@@ -13,7 +13,6 @@ from raven import Client
 
 client = Client(config.SENTRY_URL)
 
-
 # todo Add logic for index pages
 
 
