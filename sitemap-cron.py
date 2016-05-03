@@ -35,6 +35,7 @@ def log_sentry(message):
 
 @crython.job(expr='@daily')
 def sitemap_cron():
+    log_sentry("starting sitemap")
     sitemap.sitemap()
     log_sentry("sitemap done")
     # Now that sitemap is done generating take care of a few things.
