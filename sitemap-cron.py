@@ -29,8 +29,9 @@ def log_sentry(message):
         'Time': log_time,
     })
 
+    print message
     # log generic message to Sentry for counting
-    client.captureMessage(message)
+    client.captureMessage(message, type="info")
 
 
 @crython.job(expr='@daily')

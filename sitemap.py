@@ -22,7 +22,11 @@ def inspect_folder(folder_id):
     if not folder:
         # typically a permision denied error from the Web Services read call.
         return
-    md = folder.asset.folder.metadata.dynamicFields
+    try:
+        md = folder.asset.folder.metadata.dynamicFields
+    except AttributeError:
+        # folder has been deleted
+        return
     md = get_md_dict(md)
     if ('hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Do not hide") or 'hide-from-sitemap' not in md.keys():
         children = folder.asset.folder.children
