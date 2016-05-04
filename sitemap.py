@@ -97,7 +97,7 @@ def inspect_page(page_id):
 
 
 def get_event_page_priority(path):
-    year = re.search("/events/.*(\d{4})", path).group(1)
+    year = re.search("events/.*(\d{4})", path).group(1)
     current_year = date.today().year
     if int(year) < current_year:
         return '0.2'

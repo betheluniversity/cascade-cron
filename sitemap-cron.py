@@ -36,7 +36,10 @@ def log_sentry(message):
 @crython.job(expr='@daily')
 def sitemap_cron():
     log_sentry("starting sitemap")
-    sitemap.sitemap()
+    try:
+        sitemap.sitemap()
+    except:
+        client.captureException()
     log_sentry("sitemap done")
     # Now that sitemap is done generating take care of a few things.
     # 1. fix up robots.txt and site-index.xml (remove system-region)
