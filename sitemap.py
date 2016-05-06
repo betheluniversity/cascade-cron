@@ -104,12 +104,12 @@ def get_event_page_priority(path):
     try:
         search = re.search("events/.*(\d{4})", path)
         year = search.group(1)
+        current_year = date.today().year
+        if int(year) < current_year:
+            return '0.2'
+        return '0.7'
     except AttributeError:
         return None
-    current_year = date.today().year
-    if int(year) < current_year:
-        return '0.2'
-    return '0.7'
 
 
 def sitemap():
