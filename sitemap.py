@@ -68,7 +68,6 @@ def inspect_page(page_id):
         md = page.asset.page.metadata.dynamicFields
         md = get_md_dict(md)
     except AttributeError:
-        client.captureException()
         return
 
     if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
