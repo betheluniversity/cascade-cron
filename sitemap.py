@@ -71,6 +71,8 @@ def inspect_page(page_id):
         if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
             return
 
+        path = page.asset.page.path
+
     except AttributeError:
         # page was deleted
         if 'You do not have read permissions for the requested asset' in page:
@@ -78,7 +80,7 @@ def inspect_page(page_id):
         else:
             client.captureException()
 
-    path = page.asset.page.path
+
 
     # Is this page currently published to production?
     if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
