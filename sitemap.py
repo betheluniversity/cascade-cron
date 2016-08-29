@@ -67,11 +67,17 @@ def inspect_page(page_id):
     try:
         md = page.asset.page.metadata.dynamicFields
         md = get_md_dict(md)
-    except AttributeError:
-        client.captureException()
 
-    if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
-        return
+        if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
+            return
+
+    except AttributeError:
+        # page was deleted
+        if 'You do not have read permissions for the requested asset' in page:
+            return
+        else:
+            client.captureException()
+
     path = page.asset.page.path
 
     # Is this page currently published to production?
