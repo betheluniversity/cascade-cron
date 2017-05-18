@@ -71,6 +71,9 @@ def inspect_page(page_id):
         if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
             return
 
+        if 'require-authentication' in md.keys() and md['require-authentication'] == "Yes":
+            return
+
         path = page.asset.page.path
 
     except AttributeError:
