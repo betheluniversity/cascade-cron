@@ -89,6 +89,11 @@ def inspect_page(page_id):
     if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
         return
 
+
+    # check for index page
+    if path.endswith('index'):
+        path = path.replace('index', '')
+
     # We know its published to prod on the filesystem, but does the page not return 200?
     r = requests.get('https://www.bethel.edu/%s' % path, allow_redirects=False)
     if r.status_code != 200:
@@ -96,9 +101,6 @@ def inspect_page(page_id):
         log_sentry("Page in Cascade does not return 200: %s (%s)" % (path, str(r.status_code)))
         return
 
-    # check for index page
-    if path.endswith('index'):
-        path = path.replace('index', '')
 
     # todo check for location, events in the past have lower priority.
 
