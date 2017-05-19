@@ -93,7 +93,7 @@ def inspect_page(page_id):
     r = requests.get('https://www.bethel.edu/%s' % path)
     if r.status_code != 200:
         from sitemap_cron import log_sentry
-        log_sentry("Page in Cascade does not return 200: %s" % path)
+        log_sentry("Page in Cascade does not return 200: %s (%s)" % (path, str(r.status_code)))
         return
 
     # check for index page
