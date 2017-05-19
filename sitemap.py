@@ -29,20 +29,26 @@ def inspect_folder(folder_id):
         # folder has been deleted
         return
     md = get_md_dict(md)
-    if ('hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Do not hide") or 'hide-from-sitemap' not in md.keys():
-        children = folder.asset.folder.children
-        if not children:
-            logging.info("folder has no children %s" % folder.asset.folder.path)
-            yield
-        else:
-            for child in children['child']:
-                if child['type'] == 'page':
-                    for item in inspect_page(child['id']):
-                        yield item
-                elif child['type'] == 'folder':
-                    logging.info("looking in folder %s" % child.path.path)
-                    for item in inspect_folder(child['id']):
-                        yield item
+
+    if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
+        return
+
+    if 'require-authentication' in md.keys() and md['require-authentication'] == "Yes":
+        return
+
+    children = folder.asset.folder.children
+    if not children:
+        logging.info("folder has no children %s" % folder.asset.folder.path)
+        yield
+    else:
+        for child in children['child']:
+            if child['type'] == 'page':
+                for item in inspect_page(child['id']):
+                    yield item
+            elif child['type'] == 'folder':
+                logging.info("looking in folder %s" % child.path.path)
+                for item in inspect_folder(child['id']):
+                    yield item
 
 
 def get_md_dict(md):
