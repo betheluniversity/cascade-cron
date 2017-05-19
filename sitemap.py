@@ -3,6 +3,7 @@
 import os.path
 import logging
 import re
+import requests
 from datetime import date
 
 # local
@@ -67,6 +68,7 @@ def inspect_page(page_id):
     try:
         md = page.asset.page.metadata.dynamicFields
         md = get_md_dict(md)
+        path = page.asset.page.path
 
         if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
             return
@@ -74,7 +76,12 @@ def inspect_page(page_id):
         if 'require-authentication' in md.keys() and md['require-authentication'] == "Yes":
             return
 
-        path = page.asset.page.path
+        # does the page not return 200?
+        r = requests.get('https://www.bethel.edu/%s' % path)
+        if r.status_code != 200:
+            from sitemap_cron import log_sentry
+            log_sentry("Page in Cascade does not return 200: %s" % path)
+            return
 
     except AttributeError:
         # page was deleted
