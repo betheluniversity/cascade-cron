@@ -90,7 +90,7 @@ def inspect_page(page_id):
         return
 
     # We know its published to prod on the filesystem, but does the page not return 200?
-    r = requests.get('https://www.bethel.edu/%s' % path)
+    r = requests.get('https://www.bethel.edu/%s' % path, allow_redirects=False)
     if r.status_code != 200:
         from sitemap_cron import log_sentry
         log_sentry("Page in Cascade does not return 200: %s (%s)" % (path, str(r.status_code)))
