@@ -76,13 +76,6 @@ def inspect_page(page_id):
         if 'require-authentication' in md.keys() and md['require-authentication'] == "Yes":
             return
 
-        # does the page not return 200?
-        r = requests.get('https://www.bethel.edu/%s' % path)
-        if r.status_code != 200:
-            from sitemap_cron import log_sentry
-            log_sentry("Page in Cascade does not return 200: %s" % path)
-            return
-
     except AttributeError:
         # page was deleted
         if 'You do not have read permissions for the requested asset' in page.message:
@@ -94,6 +87,13 @@ def inspect_page(page_id):
 
     # Is this page currently published to production?
     if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
+        return
+
+    # We know its published to prod on the filesystem, but does the page not return 200?
+    r = requests.get('https://www.bethel.edu/%s' % path)
+    if r.status_code != 200:
+        from sitemap_cron import log_sentry
+        log_sentry("Page in Cascade does not return 200: %s" % path)
         return
 
     # check for index page
