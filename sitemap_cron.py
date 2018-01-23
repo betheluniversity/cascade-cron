@@ -21,27 +21,12 @@ from github_connection import GH, template
 
 client = Client(config.SENTRY_URL)
 
-def log_sentry(message):
-
-    log_time = time.strftime("%c")
-
-    client.extra_context({
-        'Time': log_time,
-    })
-
-    print message
-    # log generic message to Sentry for counting
-    client.captureMessage(message, type="info")
-
-
 @crython.job(expr='@daily')
 def sitemap_cron():
-    log_sentry("starting sitemap")
     try:
         sitemap.sitemap()
     except:
         client.captureException()
-    log_sentry("sitemap done")
     # Now that sitemap is done generating take care of a few things.
     # 1. fix up robots.txt and site-index.xml (remove system-region)
     # robots.txt and sitemap-index.xml published at midnight,
