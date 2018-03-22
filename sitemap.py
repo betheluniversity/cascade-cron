@@ -146,6 +146,15 @@ def sitemap():
     with open(config.SITEMAP_FILE, 'w') as file:
         file.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         for item in inspect_folder(base_folder):
-            if item:
-                file.write(item)
+            try:
+                if item:
+                    file.write(item)
+            except:
+                client.extra_context({
+                    'base_folder': base_folder,
+                    'item': item,
+                })
+                client.captureMessage("Failed to write item to sitemap. Typically from bad unicode in path.")
+                client.captureException()
+
         file.write('</urlset>')
