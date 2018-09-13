@@ -51,11 +51,11 @@ def sitemap_cron():
     with open(config.SITEMAP_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(lines))
 
-
-@crython.job(expr='@daily')
-def get_adult_programs():
-    r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30/send")
-    print "got %s" % r.text
+# Moved this to a cron job on h20 - caleb
+# @crython.job(expr='@daily')
+# def get_adult_programs():
+#     r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30/send")
+#     print "got %s" % r.text
     
 
 @crython.job(expr='@daily')
