@@ -64,12 +64,16 @@ def get_md_dict(md):
 
 
 def inspect_page(page_id):
+    page = None
     for i in range(1, 10):
         try:
             page = read(page_id)
             break
         except:
             i += 1
+
+    if not page:
+        return
 
     try:
         md = page.asset.page.metadata.dynamicFields
