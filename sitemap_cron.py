@@ -53,12 +53,6 @@ def sitemap_cron():
 
 
 @crython.job(expr='@daily')
-def get_adult_programs():
-    r = requests.get("http://programs.bethel.edu/adultprograms/sync-all/30/send")
-    print "got %s" % r.text
-    
-
-@crython.job(expr='@daily')
 def load_humans_txt():
 
     gh = GH(config.GH_LOGIN)
