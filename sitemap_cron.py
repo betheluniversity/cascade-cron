@@ -29,18 +29,6 @@ def sitemap_cron():
         client.captureException()
 
 
-@crython.job(expr='@daily')
-def load_humans_txt():
-
-    gh = GH(config.GH_LOGIN)
-    txt = gh.get_humans_text()
-
-    with open(config.HUMANS_STAGING_FILE, "w") as text_file:
-        text_file.write(txt)
-
-    with open(config.HUMANS_PRODUCTION_FILE, "w") as text_file:
-        text_file.write(txt)
-
 if __name__ == '__main__':
     crython.tab.start()
     while True:

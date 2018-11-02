@@ -7,6 +7,7 @@ import requests
 from datetime import date
 
 # Packages
+from github_connection import GH
 from paramiko import RSAKey, SFTPClient, Transport
 from paramiko.hostkeys import HostKeyEntry
 
@@ -166,24 +167,33 @@ def sitemap():
                 client.captureException()
 
         file.write('</urlset>')
-    write_redirects_to_sftp()
+
+    gh = GH(config.GH_LOGIN)
+    txt = gh.get_humans_text()
+
+    with open(config.HUMANS_FILE, "w") as text_file:
+        text_file.write(txt)
+
+    write_files_to_sftp()
 
 
-def write_redirects_to_sftp():
+def write_files_to_sftp():
     try:
-        ssh_key_object = RSAKey(filename=config['SFTP_SSH_KEY_PATH'],
-                                password=config['SFTP_SSH_KEY_PASSPHRASE'])
+        ssh_key_object = RSAKey(filename=config.SFTP_SSH_KEY_PATH,
+                                password=config.SFTP_SSH_KEY_PASSPHRASE)
 
-        remote_server_public_key = HostKeyEntry.from_line(config['SFTP_REMOTE_HOST_PUBLIC_KEY']).key
+        remote_server_public_key = HostKeyEntry.from_line(config.SFTP_REMOTE_HOST_PUBLIC_KEY).key
         # This will throw a warning, but the (string, int) tuple will automatically be parsed into a Socket object
-        remote_server = Transport((config['SFTP_REMOTE_HOST'], 22))
-        remote_server.connect(hostkey=remote_server_public_key, username=config['SFTP_USERNAME'], pkey=ssh_key_object)
+        remote_server = Transport((config.SFTP_REMOTE_HOST, 22))
+        remote_server.connect(hostkey=remote_server_public_key, username=config.SFTP_USERNAME, pkey=ssh_key_object)
 
         sftp = SFTPClient.from_transport(remote_server)
-        file_to_write = config['SITEMAP_OUTPUT_FILE_PATH']
+
         # Because of how SFTP is set up on wlp-fn2187, all these paths will be automatically prefixed with /var/www
-        remote_destination_path = 'cms.pub/redirects.txt'
-        sftp.put(file_to_write, remote_destination_path)
+        sftp.put(config.SITEMAP_FILE, 'cms.pub/redirects.txt')
+        sftp.put(config.ROBOTS_FILE, 'cms.pub/redirects.txt')
+        sftp.put(config.HUMANS_FILE, 'cms.pub/redirects.txt')
+        sftp.put(config.SITEMAP_INDEX_FILE, 'cms.pub/redirects.txt')
 
         return 'SFTP publish of redirects.txt succeeded'
     except:
