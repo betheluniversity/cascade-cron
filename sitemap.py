@@ -97,13 +97,7 @@ def inspect_page(page_id):
             return
         else:
             client.captureException()
-
-
-
-    # Is this page currently published to production?
-    if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
-        return
-
+            return
 
     # check for index page
     if path.endswith('index'):
