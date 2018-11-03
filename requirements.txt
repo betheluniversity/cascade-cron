@@ -4,4 +4,3 @@ requests
 raven
 PyGithub
 jinja2
-paramiko
