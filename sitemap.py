@@ -190,10 +190,9 @@ def write_files_to_sftp():
         sftp = SFTPClient.from_transport(remote_server)
 
         # Because of how SFTP is set up on wlp-fn2187, all these paths will be automatically prefixed with /var/www
-        sftp.put(config.SITEMAP_FILE, 'cms.pub/redirects.txt')
-        sftp.put(config.ROBOTS_FILE, 'cms.pub/redirects.txt')
-        sftp.put(config.HUMANS_FILE, 'cms.pub/redirects.txt')
-        sftp.put(config.SITEMAP_INDEX_FILE, 'cms.pub/redirects.txt')
+        sftp.put(config.SITEMAP_FILE, 'cms.pub/sitemap.xml')
+        sftp.put(config.ROBOTS_FILE, 'cms.pub/robots.txt')
+        sftp.put(config.HUMANS_FILE, 'cms.pub/humans.txt')
 
         return 'SFTP publish of redirects.txt succeeded'
     except:
