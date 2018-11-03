@@ -8,8 +8,6 @@ from datetime import date
 
 # Packages
 from github_connection import GH
-from paramiko import RSAKey, SFTPClient, Transport
-from paramiko.hostkeys import HostKeyEntry
 
 # local
 from web_services import *
@@ -97,7 +95,10 @@ def inspect_page(page_id):
             return
         else:
             client.captureException()
-            return
+
+    # Is this page currently published to production?
+    if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
+        return
 
     # check for index page
     if path.endswith('index'):
@@ -167,27 +168,3 @@ def sitemap():
 
     with open(config.HUMANS_FILE, "w") as text_file:
         text_file.write(txt)
-
-    write_files_to_sftp()
-
-
-def write_files_to_sftp():
-    try:
-        ssh_key_object = RSAKey(filename=config.SFTP_SSH_KEY_PATH,
-                                password=config.SFTP_SSH_KEY_PASSPHRASE)
-
-        remote_server_public_key = HostKeyEntry.from_line(config.SFTP_REMOTE_HOST_PUBLIC_KEY).key
-        # This will throw a warning, but the (string, int) tuple will automatically be parsed into a Socket object
-        remote_server = Transport((config.SFTP_REMOTE_HOST, 22))
-        remote_server.connect(hostkey=remote_server_public_key, username=config.SFTP_USERNAME, pkey=ssh_key_object)
-
-        sftp = SFTPClient.from_transport(remote_server)
-
-        # Because of how SFTP is set up on wlp-fn2187, all these paths will be automatically prefixed with /var/www
-        sftp.put(config.SITEMAP_FILE, 'cms.pub/sitemap.xml')
-        sftp.put(config.ROBOTS_FILE, 'cms.pub/robots.txt')
-        sftp.put(config.HUMANS_FILE, 'cms.pub/humans.txt')
-
-        return 'SFTP publish of redirects.txt succeeded'
-    except:
-        return 'SFTP publish of redirects.txt failed'
