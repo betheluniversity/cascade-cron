@@ -6,9 +6,6 @@ import re
 import requests
 from datetime import date
 
-# Packages
-from github_connection import GH
-
 # local
 from web_services import *
 import config
@@ -96,9 +93,12 @@ def inspect_page(page_id):
         else:
             client.captureException()
 
+
+
     # Is this page currently published to production?
     if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
         return
+
 
     # check for index page
     if path.endswith('index'):
@@ -144,7 +144,7 @@ def get_event_page_priority(path):
     except AttributeError:
         return None
 
-# reverted 10-8-18
+
 def sitemap():
     base_folder = config.SITEMAP_BASE_FOLDER_ID
     with open(config.SITEMAP_FILE, 'w') as file:
@@ -162,9 +162,3 @@ def sitemap():
                 client.captureException()
 
         file.write('</urlset>')
-
-    gh = GH(config.GH_LOGIN)
-    txt = gh.get_humans_text()
-
-    with open(config.HUMANS_FILE, "w") as text_file:
-        text_file.write(txt)
