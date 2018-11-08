@@ -41,9 +41,6 @@ def sitemap_cron():
     with open(config.SITEMAP_INDEX_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(lines))
 
-    with open(config.SITEMAP_FILE) as file:
-        lines = file.read().splitlines()
-
     with open(config.SITEMAP_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(lines))
 
