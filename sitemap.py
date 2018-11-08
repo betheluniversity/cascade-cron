@@ -92,6 +92,7 @@ def inspect_page(page_id):
             return
         else:
             client.captureException()
+        path = None
 
 
 
