@@ -144,7 +144,7 @@ def get_event_page_priority(path):
     except AttributeError:
         return None
 
-
+# reverted 10-8-18
 def sitemap():
     base_folder = config.SITEMAP_BASE_FOLDER_ID
     with open(config.SITEMAP_FILE, 'w') as file:
