@@ -76,6 +76,7 @@ def inspect_page(page_id):
         return
 
     try:
+        path = None
         md = page.asset.page.metadata.dynamicFields
         md = get_md_dict(md)
         path = page.asset.page.path
@@ -88,7 +89,7 @@ def inspect_page(page_id):
 
     except AttributeError:
         # page was deleted
-        if 'You do not have read permissions for the requested asset' in page.message:
+        if 'You do not have read permissions for the requested asset' in page.message or 'No configuration could be found':
             return
         else:
             client.captureException()
@@ -163,3 +164,5 @@ def sitemap():
                 client.captureException()
 
         file.write('</urlset>')
+
+sitemap()
