@@ -89,7 +89,7 @@ def inspect_page(page_id):
 
     except AttributeError:
         # page was deleted
-        if 'You do not have read permissions for the requested asset' in page.message or 'No configuration could be found':
+        if 'You do not have read permissions for the requested asset' in page.message or 'No configuration could be found' in page.message:
             return
         else:
             client.captureException()
