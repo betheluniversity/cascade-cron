@@ -91,8 +91,9 @@ def inspect_page(page_id):
         # page was deleted
         if 'You do not have read permissions for the requested asset' in page.message or 'No configuration could be found' in page.message:
             return
-        else:
-            client.captureException()
+        # I don't think we need to capture the exception. It doesn't do much for us.
+        # else:
+        #     client.captureException()
         path = None
 
     # Is this page currently published to production?
