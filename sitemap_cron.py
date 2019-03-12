@@ -11,6 +11,9 @@ from xml.sax import make_parser
 client = Client(config.SENTRY_URL)
 
 
+# This method just parses the file to check for syntax errors
+# It doesn't return something, since if an exception occurs,
+# it is caught in a try, except and sent out via sentry
 def parse_file(filename):
     parser = make_parser()
     parser.setContentHandler(ContentHandler())
