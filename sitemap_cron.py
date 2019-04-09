@@ -45,12 +45,12 @@ def sitemap_cron():
         file.write("\n".join(lines))
     with open(config.SITEMAP_FILE) as file:
         lines = file.read().splitlines()
-    try:
-        parse_file(file)
-    except Exception, e:
-        # Throws an error and exits so file isn't written to with invalid xml
-        client.captureMessage(e)
-        sys.exit(0)
+        try:
+            parse_file(file)
+        except Exception, e:
+            # Throws an error and exits so file isn't written to with invalid xml
+            client.captureMessage(e)
+            sys.exit(0)
     with open(config.SITEMAP_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(lines))
 
