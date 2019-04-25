@@ -45,6 +45,7 @@ def sitemap_cron():
         file.write("\n".join(lines))
     with open(config.SITEMAP_FILE) as file:
         lines = file.read().splitlines()
+    with open(config.SITEMAP_FILE) as file:
         try:
             parse_file(file)
         except Exception, e:
