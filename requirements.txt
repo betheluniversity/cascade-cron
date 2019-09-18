@@ -1,6 +1,6 @@
 crython
 suds
 requests
-raven
+sentry_sdk[flask]
 PyGithub
 jinja2
