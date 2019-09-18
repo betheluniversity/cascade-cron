@@ -2,13 +2,11 @@
 import sys
 import sitemap
 import config
-from raven import Client
 from github_connection import GH
 from xml.sax.handler import ContentHandler
 from xml.sax import make_parser
 
 
-client = Client(config.SENTRY_URL)
 
 
 # This method just parses the file to check for syntax errors
