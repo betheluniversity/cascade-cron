@@ -10,7 +10,12 @@ from datetime import date
 from web_services import *
 import config
 
+import sentry_sdk
+from sentry_sdk import configure_scope
 
+if config.SENTRY_URL:
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    sentry_sdk.init(dsn=config.SENTRY_URL, integrations=[FlaskIntegration()])
 
 # todo Add logic for index pages
 
@@ -152,6 +157,11 @@ def sitemap():
                 if item:
                     file.write(item)
             except:
+                with configure_scope as scope:
+                    scope.set_tag('base_folder', base_folder)
+                    scope.set_tag('item', item)
+                sentry_sdk.capture_message("Failed to write item to sitemap. Typically from bad unicode in path.")
+                sentry_sdk.capture_exception()
 
         file.write('</urlset>')
 
