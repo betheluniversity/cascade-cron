@@ -10,9 +10,7 @@ from datetime import date
 from web_services import *
 import config
 
-from raven import Client
 
-client = Client(config.SENTRY_URL)
 
 # todo Add logic for index pages
 
@@ -154,12 +152,6 @@ def sitemap():
                 if item:
                     file.write(item)
             except:
-                client.extra_context({
-                    'base_folder': base_folder,
-                    'item': item,
-                })
-                client.captureMessage("Failed to write item to sitemap. Typically from bad unicode in path.")
-                client.captureException()
 
         file.write('</urlset>')
 
