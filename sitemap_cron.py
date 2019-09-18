@@ -2,11 +2,16 @@
 import sys
 import sitemap
 import config
+import sentry_sdk
+from sentry_sdk import configure_scope
 from github_connection import GH
 from xml.sax.handler import ContentHandler
 from xml.sax import make_parser
 
 
+if config.SENTRY_URL:
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    sentry_sdk.init(dsn=config.SENTRY_URL, integrations=[FlaskIntegration()])
 
 
 # This method just parses the file to check for syntax errors
