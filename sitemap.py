@@ -157,7 +157,7 @@ def sitemap():
                 if item:
                     file.write(item)
             except:
-                with configure_scope as scope:
+                with configure_scope() as scope:
                     scope.set_tag('base_folder', base_folder)
                     scope.set_tag('item', item)
                 sentry_sdk.capture_message("Failed to write item to sitemap. Typically from bad unicode in path.")

@@ -3,7 +3,6 @@ import sys
 import sitemap
 import config
 import sentry_sdk
-from sentry_sdk import configure_scope
 from github_connection import GH
 from xml.sax.handler import ContentHandler
 from xml.sax import make_parser
@@ -40,7 +39,7 @@ def sitemap_cron():
     try:
         sitemap.sitemap()
     except:
-        client.captureException()
+        sentry_sdk.capture_exception()
 
     # 2. Move the new sitemap to replace the old one. Can't replace the old one right away
     # because it is a generator, so it would be incomplete while it runs.
@@ -53,7 +52,7 @@ def sitemap_cron():
             parse_file(file)
         except Exception, e:
             # Throws an error and exits so file isn't written to with invalid xml
-            client.captureMessage(e)
+            sentry_sdk.capture_message(e)
             sys.exit(0)
     with open(config.SITEMAP_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(lines))
