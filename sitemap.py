@@ -110,7 +110,7 @@ def inspect_page(page_id):
     # We know its published to prod on the filesystem, but does the page not return 200?
     r = requests.get('https://www.bethel.edu/%s' % path, allow_redirects=False)
     if r.status_code != 200:
-        if r.status_code == 302:
+        if r.status_code == 302 or r.status_code == 301:
             # just checks auth, doesn't require, so don't alert
             return
         # from sitemap_cron import log_sentry
