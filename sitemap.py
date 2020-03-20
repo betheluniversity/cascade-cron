@@ -7,11 +7,11 @@ import requests
 from datetime import date
 
 # local
-from web_services import *
 import config
 
 import sentry_sdk
 from sentry_sdk import configure_scope
+from bu_cascade.cascade_connector import Cascade
 
 if config.SENTRY_URL:
     from sentry_sdk.integrations.flask import FlaskIntegration
@@ -19,50 +19,52 @@ if config.SENTRY_URL:
 
 # todo Add logic for index pages
 
+cascade_connector = Cascade(config.SOAP_URL, config.CASCADE_LOGIN, config.SITE_ID, config.STAGING_DESTINATION_ID)
+
 
 # Just putting this here to work on it. Move out of tinker once the Cascade stuff is more portable
 def inspect_folder(folder_id):
-    folder = read(folder_id, type="folder")
+    folder = cascade_connector.read(folder_id, asset_type="folder")
     if not folder:
         # typically a permision denied error from the Web Services read call.
         return
     try:
-        md = folder.asset.folder.metadata.dynamicFields
-    except AttributeError:
+        md = folder['asset']['folder']['metadata']['dynamicFields']
+    except KeyError:
         # folder has been deleted
         return
     md = get_md_dict(md)
 
-    if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
+    if 'hide-from-sitemap' in list(md.keys()) and md['hide-from-sitemap'] == "Hide":
         return
 
-    if 'require-authentication' in md.keys() and md['require-authentication'] == "Yes":
+    if 'require-authentication' in list(md.keys()) and md['require-authentication'] == "Yes":
         return
 
-    children = folder.asset.folder.children
-    if not children:
-        logging.info("folder has no children %s" % folder.asset.folder.path)
-        yield
-    else:
+    if 'children' in folder['asset']['folder']:
+        children = folder['asset']['folder']['children']
         for child in children['child']:
             if child['type'] == 'page':
                 for item in inspect_page(child['id']):
                     yield item
             elif child['type'] == 'folder':
-                logging.info("looking in folder %s" % child.path.path)
+                logging.info("looking in folder %s" % child['path']['path'])
                 for item in inspect_folder(child['id']):
                     yield item
+    else:
+        logging.info("folder has no children %s" % folder['asset']['folder'])
+        yield
 
 
 def get_md_dict(md):
     data = {}
     if not md:
         return data
-    for field in md.dynamicField:
+    for field in md['dynamicField']:
         try:
-            data[field.name] = field.fieldValues.fieldValue[0].value
+            data[field['name']] = field['fieldValues']['fieldValue'][0]['value']
         except:
-            data[field.name] = None
+            data[field['name']] = None
     return data
 
 
@@ -70,7 +72,7 @@ def inspect_page(page_id):
     page = None
     for i in range(1, 10):
         try:
-            page = read(page_id)
+            page = cascade_connector.read(page_id)
             break
         except:
             i += 1
@@ -80,19 +82,19 @@ def inspect_page(page_id):
 
     try:
         path = None
-        md = page.asset.page.metadata.dynamicFields
+        md = page['asset']['page']['metadata']['dynamicFields']
         md = get_md_dict(md)
-        path = page.asset.page.path
+        path = page['asset']['page']['path']
 
-        if 'hide-from-sitemap' in md.keys() and md['hide-from-sitemap'] == "Hide":
+        if 'hide-from-sitemap' in list(md.keys()) and md['hide-from-sitemap'] == "Hide":
             return
 
-        if 'require-authentication' in md.keys() and md['require-authentication'] == "Yes":
+        if 'require-authentication' in list(md.keys()) and md['require-authentication'] == "Yes":
             return
 
     except AttributeError:
         # page was deleted
-        if 'You do not have read permissions for the requested asset' in page.message or 'No configuration could be found' in page.message:
+        if 'You do not have read permissions for the requested asset' in page['message'] or 'No configuration could be found' in page['message']:
             return
         # I don't think we need to capture the exception. It doesn't do much for us.
         # else:
@@ -122,7 +124,7 @@ def inspect_page(page_id):
 
     ret = ["<url>"]
     ret.append("<loc>https://www.bethel.edu/%s</loc>" % path)
-    date = page.asset.page.lastModifiedDate
+    date = page['asset']['page']['lastModifiedDate']
 
     priority = None
     if "events" in path:
@@ -131,7 +133,7 @@ def inspect_page(page_id):
     if priority:
         ret.append("<priority>%s</priority>" % priority)
 
-    ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date.year, date.month, date.day))
+    ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date['year'], date['month'], date['day']))
     ret.append("</url>")
     yield "\n".join(ret)
 
