@@ -3,4 +3,4 @@ requests
 sentry_sdk[flask]
 PyGithub
 jinja2
-git+git://github.com/betheluniversity/cascade.git
+bu_cascade

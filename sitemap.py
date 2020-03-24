@@ -19,12 +19,12 @@ if config.SENTRY_URL:
 
 # todo Add logic for index pages
 
-cascade_connector = Cascade(config.SOAP_URL, config.CASCADE_LOGIN, config.SITE_ID, config.STAGING_DESTINATION_ID)
+cascade_api = Cascade(config.SOAP_URL, config.CASCADE_LOGIN, config.SITE_ID, config.STAGING_DESTINATION_ID)
 
 
 # Just putting this here to work on it. Move out of tinker once the Cascade stuff is more portable
 def inspect_folder(folder_id):
-    folder = cascade_connector.read(folder_id, asset_type="folder")
+    folder = cascade_api.read(folder_id, asset_type="folder")
     if not folder:
         # typically a permision denied error from the Web Services read call.
         return
@@ -72,7 +72,7 @@ def inspect_page(page_id):
     page = None
     for i in range(1, 10):
         try:
-            page = cascade_connector.read(page_id)
+            page = cascade_api.read(page_id)
             break
         except:
             i += 1
