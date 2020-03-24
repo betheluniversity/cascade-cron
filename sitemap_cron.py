@@ -50,9 +50,9 @@ def sitemap_cron():
     with open(config.SITEMAP_FILE) as file:
         try:
             parse_file(file)
-        except Exception, e:
+        except Exception as e:
             # Throws an error and exits so file isn't written to with invalid xml
-            sentry_sdk.capture_message(e)
+            sentry_sdk.capture_message(repr(e))
             sys.exit(0)
     with open(config.SITEMAP_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(lines))
