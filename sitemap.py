@@ -72,7 +72,7 @@ def inspect_page(page_id):
     page = None
     for i in range(1, 10):
         try:
-            page = cascade_api.read(page_id)
+            page = cascade_api.read(page_id, 'page')
             break
         except:
             i += 1
@@ -133,7 +133,7 @@ def inspect_page(page_id):
     if priority:
         ret.append("<priority>%s</priority>" % priority)
 
-    ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date['year'], date['month'], date['day']))
+    ret.append("<lastmod>%02d-%02d-%02d</lastmod>" % (date.year, date.month, date.day))
     ret.append("</url>")
     yield "\n".join(ret)
 
@@ -166,5 +166,6 @@ def sitemap():
                 sentry_sdk.capture_exception()
 
         file.write('</urlset>')
+
 
 sitemap()
