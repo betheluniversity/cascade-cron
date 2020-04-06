@@ -94,7 +94,7 @@ def inspect_page(page_id):
 
     except (KeyError, AttributeError):
         # page was deleted or page is a draft
-        if 'You do not have read permissions for the requested asset' in page['message'] or 'No configuration could be found' in page['message']:
+        if 'message' in page and ('You do not have read permissions for the requested asset' in page['message'] or 'No configuration could be found' in page['message']):
             return
         # I don't think we need to capture the exception. It doesn't do much for us.
         # else:
