@@ -102,7 +102,7 @@ def inspect_page(page_id):
         path = None
 
     # Is this page currently published to production?
-    if path and not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
+    if path and path is not None and not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
         return
 
     # check for index page
