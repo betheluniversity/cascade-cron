@@ -99,15 +99,19 @@ def inspect_page(page_id):
         # I don't think we need to capture the exception. It doesn't do much for us.
         # else:
         #     client.captureException()
-        path = None
+        return
 
-    # Is this page currently published to production?
-    if path and path is not None and not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
+    # Is this page currently published to production? TODO cleanup?
+    if not os.path.exists('/var/www/cms.pub/%s.php' % path) and not config.TEST:
         return
 
     # check for index page
-    if path.endswith('index'):
-        path = path.replace('index', '')
+    try:
+        if path.endswith('index'):
+            path = path.replace('index', '')
+
+    except:
+        return
 
     # We know its published to prod on the filesystem, but does the page not return 200?
     r = requests.get('https://www.bethel.edu/%s' % path, allow_redirects=False)
