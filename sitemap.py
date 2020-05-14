@@ -4,7 +4,7 @@ import os.path
 import logging
 import re
 import requests
-from datetime import date
+from datetime import *
 
 # local
 import config
@@ -12,6 +12,7 @@ import config
 import sentry_sdk
 from sentry_sdk import configure_scope
 from bu_cascade.cascade_connector import Cascade
+from bu_cascade.asset_tools import find
 
 if config.SENTRY_URL:
     from sentry_sdk.integrations.flask import FlaskIntegration
@@ -40,6 +41,24 @@ def inspect_folder(folder_id):
 
     if 'require-authentication' in list(md.keys()) and md['require-authentication'] == "Yes":
         return
+
+    # This block of code is used to skip any OLD event folders that are 2+ years old. We check more specifically in the
+    # inspect_page function for events that are 1.5 years or older.
+    folder_path = folder['asset']['folder']['path']
+    split_folder = folder_path.split('/')
+    cutoff_date = datetime.now() - timedelta(weeks=78)
+    if split_folder[0] == 'events':
+        try:
+            # we except on this, as the ValueError is when non year folder names are used
+            if (split_folder and len(split_folder) == 2 and int(split_folder[1]) <= int(cutoff_date.year)):
+                return
+
+            # TODO: also consider events/arts/music/2015/ and events/arts/theatre/2015/
+            if len(split_folder) == 4 and ('events/arts/music/' in folder_path or 'events/arts/theatre/' in folder_path):
+                if (int(split_folder[3]) <= int(cutoff_date.year)):
+                    return
+        except ValueError:
+            pass
 
     if 'children' in folder['asset']['folder']:
         children = folder['asset']['folder']['children']
@@ -112,6 +131,21 @@ def inspect_page(page_id):
 
     except:
         return
+
+    # This block of code is used to check if event is older than a year and a half, based on the most recent event's end date.
+    cutoff_date = (datetime.now() - timedelta(weeks=78)).timestamp() * 1000  # multiply by 1000 to fix it for cascade
+    content_type_path = page['asset']['page']['contentTypePath']
+    if content_type_path == 'Event':
+        event_dates = find(page, 'event-dates')
+        if isinstance(event_dates, list):
+            event_dates = event_dates[-1]
+        date_to_check = find(event_dates, 'end-date', False)
+        if not date_to_check:
+            date_to_check = find(event_dates, 'start-date', False)
+
+        # if the event date is before the cutoff date, return
+        if int(date_to_check) <= cutoff_date:
+            return
 
     # We know its published to prod on the filesystem, but does the page not return 200?
     r = requests.get('https://www.bethel.edu/%s' % path, allow_redirects=False)
