@@ -4,7 +4,7 @@ import os.path
 import logging
 import re
 import requests
-from datetime import *
+from datetime import datetime, timedelta
 
 # local
 import config
