@@ -13,6 +13,8 @@ import sentry_sdk
 from sentry_sdk import configure_scope
 from bu_cascade.cascade_connector import Cascade
 
+hidden_pages = []
+
 if config.SENTRY_URL:
     from sentry_sdk.integrations.flask import FlaskIntegration
     sentry_sdk.init(dsn=config.SENTRY_URL, integrations=[FlaskIntegration()])
@@ -87,6 +89,7 @@ def inspect_page(page_id):
         path = page['asset']['page']['path']
 
         if 'hide-from-sitemap' in list(md.keys()) and md['hide-from-sitemap'] == "Hide":
+            hidden_pages.append("https://www.bethel.edu/" + path + "\n")
             return
 
         if 'require-authentication' in list(md.keys()) and md['require-authentication'] == "Yes":
@@ -173,3 +176,15 @@ def sitemap():
 
 
 sitemap()
+
+
+def hidden_files():
+    with open(config.HIDDEN_FILE, 'w') as file:
+        for item in hidden_pages:
+            file.write(item)
+    with open(config.HIDDEN_PRODUCTION_FILE, 'w') as file:
+        for item in hidden_pages:
+            file.write(item)
+
+
+hidden_files()
