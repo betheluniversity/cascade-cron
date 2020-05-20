@@ -89,7 +89,7 @@ def inspect_page(page_id):
         path = page['asset']['page']['path']
 
         if 'hide-from-sitemap' in list(md.keys()) and md['hide-from-sitemap'] == "Hide":
-            hidden_pages.append("https://www.bethel.edu/" + path + "\n")
+            hidden_pages.append("https://www.bethel.edu/" + path + ",")
             return
 
         if 'require-authentication' in list(md.keys()) and md['require-authentication'] == "Yes":
@@ -179,12 +179,14 @@ sitemap()
 
 
 def hidden_files():
+    hidden = ''
+    for item in hidden_pages:
+        hidden = hidden + str(item)
+    hidden = hidden.split(",")
     with open(config.HIDDEN_FILE, 'w') as file:
-        for item in hidden_pages:
-            file.write(item)
+        file.write("\n".join(hidden))
     with open(config.HIDDEN_PRODUCTION_FILE, 'w') as file:
-        for item in hidden_pages:
-            file.write(item)
+        file.write("\n".join(hidden))
 
 
 hidden_files()
