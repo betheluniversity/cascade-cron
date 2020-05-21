@@ -14,6 +14,7 @@ from sentry_sdk import configure_scope
 from bu_cascade.cascade_connector import Cascade
 
 hidden_pages = ""
+hidden_folders = ""
 
 if config.SENTRY_URL:
     from sentry_sdk.integrations.flask import FlaskIntegration
@@ -26,18 +27,21 @@ cascade_api = Cascade(config.SOAP_URL, config.CASCADE_LOGIN, config.SITE_ID, con
 
 # Just putting this here to work on it. Move out of tinker once the Cascade stuff is more portable
 def inspect_folder(folder_id):
+    global hidden_folders
     folder = cascade_api.read(folder_id, asset_type="folder")
     if not folder:
         # typically a permision denied error from the Web Services read call.
         return
     try:
         md = folder['asset']['folder']['metadata']['dynamicFields']
+        path = folder['asset']['folder']['path']
     except KeyError:
         # folder has been deleted
         return
     md = get_md_dict(md)
 
     if 'hide-from-sitemap' in list(md.keys()) and md['hide-from-sitemap'] == "Hide":
+        hidden_folders = hidden_folders + ("https://www.bethel.edu/" + path + ",")
         return
 
     if 'require-authentication' in list(md.keys()) and md['require-authentication'] == "Yes":
@@ -178,13 +182,20 @@ def sitemap():
 
 sitemap()
 
-# Takes in a string containing the hidden files and splits them based on commas.
-# Writes them to HIDDEN_FILE and HIDDEN_PRODUCTION_FILE
+
+# Takes in a string containing the hidden files and folders and splits them based on commas.
+# Writes them to the corresponding production and non-production .txt files from config
 def hidden_files():
     hidden = hidden_pages.split(",")
     with open(config.HIDDEN_FILE, 'w') as file:
         file.write("\n".join(hidden))
     with open(config.HIDDEN_PRODUCTION_FILE, 'w') as file:
+        file.write("\n".join(hidden))
+
+    hidden = hidden_folders.split(",")
+    with open(config.HIDDEN_FOLDER, 'w') as file:
+        file.write("\n".join(hidden))
+    with open(config.HIDDEN_PRODUCTION_FOLDER, 'w') as file:
         file.write("\n".join(hidden))
 
 
