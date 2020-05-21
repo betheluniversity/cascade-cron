@@ -187,15 +187,15 @@ sitemap()
 # Writes them to the corresponding production and non-production .txt files from config
 def hidden_files():
     hidden = hidden_pages.split(",")
-    with open(config.HIDDEN_FILE, 'w') as file:
+    with open(config.HIDDEN_PAGES_FILE, 'w') as file:
         file.write("\n".join(hidden))
-    with open(config.HIDDEN_PRODUCTION_FILE, 'w') as file:
+    with open(config.HIDDEN_PAGES_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(hidden))
 
     hidden = hidden_folders.split(",")
-    with open(config.HIDDEN_FOLDER, 'w') as file:
+    with open(config.HIDDEN_FOLDERS_FILE, 'w') as file:
         file.write("\n".join(hidden))
-    with open(config.HIDDEN_PRODUCTION_FOLDER, 'w') as file:
+    with open(config.HIDDEN_FOLDERS_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(hidden))
 
 
