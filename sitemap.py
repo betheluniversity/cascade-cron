@@ -178,7 +178,8 @@ def sitemap():
 
 sitemap()
 
-
+# Takes in a string containing the hidden files and splits them based on commas.
+# Writes them to HIDDEN_FILE and HIDDEN_PRODUCTION_FILE
 def hidden_files():
     hidden = hidden_pages.split(",")
     with open(config.HIDDEN_FILE, 'w') as file:
