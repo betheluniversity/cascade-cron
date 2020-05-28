@@ -1,6 +1,6 @@
 Bethel Sitemap
 ============
-The Bethel Sitemap is used to generate a handful of XML files used for sitemap purposes.
+The Bethel Sitemap is used to generate a handful of XML files used for sitemap purposes. The sitemap is regenerated daily.
 
 
 sitemap.xml - A roadmap for search engines, which helps boost SEO. 
