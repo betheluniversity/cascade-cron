@@ -43,8 +43,6 @@ def sitemap_cron():
 
     # 2. Move the new sitemap to replace the old one. Can't replace the old one right away
     # because it is a generator, so it would be incomplete while it runs.
-    with open(config.SITEMAP_INDEX_PRODUCTION_FILE, 'w') as file:
-        file.write("\n".join(lines))
     with open(config.SITEMAP_FILE) as file:
         lines = file.read().splitlines()
     with open(config.SITEMAP_FILE) as file:

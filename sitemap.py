@@ -59,7 +59,6 @@ def inspect_folder(folder_id):
             if (split_folder and len(split_folder) == 2 and int(split_folder[1]) <= int(cutoff_date.year)):
                 return
 
-            # TODO: also consider events/arts/music/2015/ and events/arts/theatre/2015/
             if len(split_folder) == 4 and ('events/arts/music/' in folder_path or 'events/arts/theatre/' in folder_path):
                 if (int(split_folder[3]) <= int(cutoff_date.year)):
                     return
@@ -164,9 +163,6 @@ def inspect_page(page_id):
         # from sitemap_cron import log_sentry
         # log_sentry("Page in Cascade does not return 200: %s (%s)" % (path, str(r.status_code)))
         return
-
-
-    # todo check for location, events in the past have lower priority.
 
     ret = ["<url>"]
     ret.append("<loc>https://www.bethel.edu/%s</loc>" % path)
