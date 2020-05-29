@@ -219,13 +219,9 @@ def hidden_files():
     hidden = hidden_pages.split(",")
     with open(config.HIDDEN_PAGES_FILE, 'w') as file:
         file.write("\n".join(hidden))
-    with open(config.HIDDEN_PAGES_PRODUCTION_FILE, 'w') as file:
-        file.write("\n".join(hidden))
 
     hidden = hidden_folders.split(",")
     with open(config.HIDDEN_FOLDERS_FILE, 'w') as file:
-        file.write("\n".join(hidden))
-    with open(config.HIDDEN_FOLDERS_PRODUCTION_FILE, 'w') as file:
         file.write("\n".join(hidden))
 
 
